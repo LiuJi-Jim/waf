@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<script type="text/javascript" src="http://libs.baidu.com/zepto/1.0rc/zepto.min.js"></script>
+	<script type="text/javascript" src="../src/waf.core.js"></script>
+	<script type="text/javascript" src="../src/waf.parseHash.js"></script>
+	<style type="text/css">
+	#console { font-family:monospace; font-size:18px; font-weight:bold; }
+	#hash { height:24px; width:100%; }
+	</style>
+</head>
+<body>
+<h1>Hash Parse</h1>
+<div>
+	<!--<input type="text" id="hash" value="#bd_page_type=1/pu=sz%401320_2001%2Cgt%40500082_apple_iphone_0_2%2Cusm%404/uid=wiaui_1320651035_2509/t=iphone/w=0_10_%E5%A1%9E%E7%8F%AD%E8%AE%BA%E5%9D%9B/ssid=0/from=0/l=0/tc" />-->
+	<!--<input type="text" id="hash" value="#/tc?bd_page_type=1&pu=sz%401320_2001%2Cgt%40500082_apple_iphone_0_2%2Cusm%404&uid=wiaui_1320651035_2509&t=iphone&w=0_10_%E5%A1%9E%E7%8F%AD%E8%AE%BA%E5%9D%9B&ssid=0&from=0&l=0&" />-->
+	<input type="text" id="hash" value="#/bd_page_type=1/pu=sz%401320_2001%2Cgt%40500082_apple_iphone_0_2%2Cusm%401/uid=wiaui_1320651035_2509/t=iphone/w=0_10_55bbs/ssid=0/from=0/l=0/tc?pn=15&m=8&src=bbs%2E55bbs%2Ecom%2Findex%2Ephp" />
+</div>
+<div>
+	<input type="button" id="parse" value="parse" />
+</div>
+<div id="console"></div>
+<script type="text/javascript">
+(function($, waf){
+function show(txt){
+    var console = $('#console'), children = console.children();
+    console.append('<div>'+txt+'</div>');
+    if (children.length > 20) {
+        children.first().remove();
+    }
+}
+
+$('#parse').bind('click', function(e){
+	var hash = waf.parseHash($('#hash').val());
+	$('#console').html('');
+	show('handler[' + hash.handler +']');
+	for (var key in hash.params){
+		show(key + '[' + hash.params[key] + ']');
+	}
+});
+
+
+var test = function(a, b, c, d){
+};
+
+})(Zepto, waf);
+</script>
+</body>
+</html>

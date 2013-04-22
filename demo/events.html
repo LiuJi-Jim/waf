@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<script type="text/javascript" src="http://libs.baidu.com/zepto/1.0rc/zepto.min.js"></script>
+	<script type="text/javascript" src="../src/waf.core.js"></script>
+	<style type="text/css">
+	#console { font-family:monospace; font-size:18px; font-weight:bold; }
+	#hash { height:24px; width:100%; }
+	</style>
+</head>
+<body>
+<h1>Events</h1>
+<div>
+	<input type="button" id="fire" value="fire" />
+</div>
+<div id="console"></div>
+<script type="text/javascript">
+(function($, waf){
+function show(txt){
+    var console = $('#console'), children = console.children();
+    console.append('<div>'+txt+'</div>');
+    if (children.length > 20) {
+        children.first().remove();
+    }
+}
+var Klass = function(str){
+    this.str = str;
+};
+Klass.prototype.say = function(){
+    show("I'm " + this.str);
+    this.fire('say');
+};
+waf.extend(Klass.prototype, waf.Events);
+
+
+var k1 = new Klass('Jim'),
+    k2 = new Klass('Tom');
+    
+k1.bind('say', function(e){
+    show('k1 says!!');
+});
+k2.bind('say', function(e){
+    show('k2 says!!');
+});
+$('#fire').bind('click', function(e){
+    k1.say();
+    k2.say();
+});
+
+})(Zepto, waf);
+</script>
+</body>
+</html>

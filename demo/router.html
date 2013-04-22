@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<script type="text/javascript" src="http://libs.baidu.com/zepto/1.0rc/zepto.min.js"></script>
+	<script type="text/javascript" src="../src/waf.core.js"></script>
+	<script type="text/javascript" src="../src/waf.parseHash.js"></script>
+	<script type="text/javascript" src="../src/waf.history.js"></script>
+	<script type="text/javascript" src="../src/waf.router.js"></script>
+	<style type="text/css">
+	#console { font-family:monospace; font-size:18px; font-weight:bold; }
+	#hash { height:24px; width:100%; }
+	</style>
+</head>
+<body>
+<h1>Router</h1>
+<div>
+	<!--<input type="text" id="hash" value="#bd_page_type=1/pu=sz%401320_2001%2Cgt%40500082_apple_iphone_0_2%2Cusm%404/uid=wiaui_1320651035_2509/t=iphone/w=0_10_%E5%A1%9E%E7%8F%AD%E8%AE%BA%E5%9D%9B/ssid=0/from=0/l=0/tc" />-->
+	<!--<input type="text" id="hash" value="#/tc?bd_page_type=1&pu=sz%401320_2001%2Cgt%40500082_apple_iphone_0_2%2Cusm%404&uid=wiaui_1320651035_2509&t=iphone&w=0_10_%E5%A1%9E%E7%8F%AD%E8%AE%BA%E5%9D%9B&ssid=0&from=0&l=0&" />-->
+	<input type="text" id="hash" value="#/say?type=hello&name=jim" />
+</div>
+<div>
+<h2>可用的路由</h2>
+<p>test(val) e.g. <pre>/test?val=123</pre></p>
+<p>sayHello(name) e.g. <pre>/say?type=hello&name=jim</pre></p>
+<p>saySorry(name) e.g. <pre>/say?type=sorry&name=girl</pre></p>
+</div>
+<div>
+	<input type="button" id="go" value="go!" />
+</div>
+<div id="console"></div>
+<script type="text/javascript">
+(function($, waf){
+function show(txt){
+    var console = $('#console'), children = console.children();
+    console.append('<div>'+txt+'</div>');
+    if (children.length > 20) {
+        children.first().remove();
+    }
+}
+function test(val){
+    show(val);
+}
+function sayHello(name){
+    show('hello, ' + name);
+}
+function saySorry(name){
+    show('sorry, ' + name);
+}
+
+waf.Router.route({
+    test: {
+        rules: {
+            handler: '/test'
+        },
+        handler: {
+            callback: test,
+            params: ['val']
+        }
+    },
+    hello: {
+        rules: {
+            handler: '/say',
+            exists: ['name'],
+            params: {
+                type: 'hello'
+            }
+        },
+        handler: {
+            callback: sayHello,
+            params: ['name']
+        }
+    },
+    sorry: {
+        rules: {
+            handler: '/say',
+            exists: ['name'],
+            params: {
+                type: 'sorry'
+            }
+        },
+        handler: {
+            callback: saySorry,
+            params: ['name']
+        }
+    },
+    _default: function(url){
+        show('不满足任何路由，但覆盖了默认路由，啥也不干。');
+        return true;
+    }
+});
+waf.Router.init();
+
+$('#go').bind('click', function(e){
+    var hash = $('#hash').val();
+    waf.Router.navigate(hash);
+});
+
+
+})(Zepto, waf);
+</script>
+</body>
+</html>

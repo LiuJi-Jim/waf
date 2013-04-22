@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<script type="text/javascript" src="http://libs.baidu.com/zepto/1.0rc/zepto.min.js"></script>
+	<script type="text/javascript" src="../src/waf.core.js"></script>
+	<script type="text/javascript" src="../src/waf.model.js"></script>
+	<style type="text/css">
+	#console { font-family:Sans-Serif; font-size:18px; font-weight:bold; }
+    .content-custom { font-family:monospace; }
+	</style>
+</head>
+<body>
+<h1>Model</h1>
+<div id="console"></div>
+<script type="text/javascript">
+(function($, waf){
+$(function(){
+function show(txt){
+    var console = $('#console'), children = console.children();
+    console.append('<div>'+txt+'</div>');
+    if (children.length > 20) {
+        children.first().remove();
+    }
+}
+
+// 为评论定义一个Model，指定模板为.comment
+var Comment = waf.Model.define({
+    template: '.comment'
+});
+// 为文章定义一个Model，指定模板为.article
+var Article = waf.Model.define({
+    template: '.article',
+    fields: {
+        comments: Comment,
+        content: function(content){
+            return '<div class="content-custom">' + content + '</div>';
+        }
+    }
+});
+
+// 为详情定义一个Model，指定模板为.detail
+// 继承自Article，指定字段comments的类型为Comment，content字段自定义渲染方法
+var Detail = Article.extend({
+    template: '.detail'
+});
+
+//数据来了
+var data = [{
+    title: 'this is title',
+    author: 'jim',
+    content: 'this is very loooooooong content',
+    comments: [{   
+        author: 'lu ren jia',
+        content: 'lu guo'
+    }, {
+        author: 'lu ren yi',
+        content: 'wo ye lu guo'
+    }]
+}, {
+    title: 'this is title 2',
+    author: 'jim is not 2',
+    content: 'again, this is very loooooooong content',
+    comments: [{   
+        author: '路人甲',
+        content: '再次路过'
+    }]
+}];
+
+//渲染一个model
+var view = Detail.render(data);
+
+$('#console').append(view);
+});
+})(Zepto, waf);
+</script>
+<div id="templates" style="display:none;">
+<div class="detail" style="border:1px solid #000; margin:20px; padding:10px;">
+    <h1 data-field="title"></h1>
+    <p data-field="author" style="border-bottom: 1px solid #666;"></p>
+    <div data-field="content"></div>
+    <p>评论：</p>
+    <ul data-field="comments"></ul>
+</div>
+<li class="comment">
+    <strong data-field="author"></strong> Says: <span data-field="content"></span>
+</li>
+</div>
+
+</body>
+</html>

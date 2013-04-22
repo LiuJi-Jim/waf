@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<script type="text/javascript" src="http://libs.baidu.com/zepto/1.0rc/zepto.min.js"></script>
+	<script type="text/javascript" src="../src/waf.core.js"></script>
+	<script type="text/javascript" src="../src/waf.history.js"></script>
+	<style type="text/css">
+	#console { font-family:monospace; font-size:18px; font-weight:bold; }
+	#hash { height:24px; width:100%; }
+	</style>
+</head>
+<body>
+<h1>History</h1>
+<div>
+	<input type="text" id="hash" value="" />
+</div>
+<div>
+	<input type="button" id="push" value="push" />
+</div>
+<div id="console"></div>
+<script type="text/javascript">
+(function($, waf){
+function show(txt){
+    var console = $('#console'), children = console.children();
+    console.append('<div>'+txt+'</div>');
+    if (children.length > 20) {
+        children.first().remove();
+    }
+}
+
+$('#push').bind('click', function(e){
+	var hash = $('#hash').val();
+	waf.History.push(hash);
+});
+
+waf.History.bind('pop init', function(e){
+	show(e.name + ' from['+e.data.from+'] to['+e.data.to+']');
+});
+
+})(Zepto, waf);
+</script>
+</body>
+</html>
